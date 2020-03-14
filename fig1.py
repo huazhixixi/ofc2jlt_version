@@ -1,7 +1,7 @@
 import numpy as np
 from funtions import generate_anomaly_wss, generate_signal, prop, CoherentReceiver, remind
 
-from library2 import NonlinearFiber, ConstantGainEdfa, QamSignal
+from library import NonlinearFiber, ConstantGainEdfa, QamSignal
 
 # for ith in range(5):
 #     spans = [NonlinearFiber(0.2,16.7,80,1550,0,'single') for _ in range(5)]
