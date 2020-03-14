@@ -44,14 +44,14 @@ def visualize(ins: List):
     print('\n')
 
 
-def generate_anomaly_wss(kind: str, failure_value: float, number: float, ith: float) -> [WSS]:
+def generate_anomaly_wss(kind: str, failure_value: float, number: float, soft_failure_location: float) -> [WSS]:
     res = []
     for _ in range(number):
-        if _ == ith:
+        if _ ==  soft_failure_location:
             if kind.lower() == 'fs':
-                wss = WSS(value, 50e9, 8.8e9)
+                wss = WSS(failure_value, 50e9, 8.8e9)
             if kind.lower() == 'ft':
-                wss = WSS(0, value, 8.8e9)
+                wss = WSS(0, failure_value, 8.8e9)
         else:
             wss = WSS(0, 50e9, 8.8e9)
         res.append(wss)
