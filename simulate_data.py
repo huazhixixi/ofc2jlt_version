@@ -11,14 +11,14 @@ import numpy as np
 from library import NonlinearFiber, ConstantGainEdfa
 
 import time
-def simulation(failure_kind,link_configuration,is_ase,save_dir):
+def simulation(failure_kind,link_configuration,is_ase,save_dir,ith_link_base):
     try:
 
 
-        for link in link_configuration:
+        for iththth,link in enumerate(link_configuration):
             total_number = link[0]
             if failure_kind.lower()=='fs':
-                failure_value = (12*np.random.rand()+5)*1e9
+                failure_value = (7*np.random.rand()+10)*1e9
             elif failure_kind.lower()=='ft':
                 failure_value = (10 * np.random.rand() + 25) * 1e9
             else:
@@ -37,29 +37,29 @@ def simulation(failure_kind,link_configuration,is_ase,save_dir):
 
             signal = generate_signal(0.2,0)
             signal = prop(signal,spans)
+            signal.save(save_dir+f'/{ith_link_base+iththth}_{total_number}wss_{failure_kind}_{failure_value}_{soft_failure_location}')
 
-            joblib.dump([link,signal,spans,wsses],save_dir+f'/{total_number}wss_{failure_kind}_{failure_value}_{soft_failure_location}')
     except Exception as e:
         print(e)
 
 if __name__ == '__main__':
     import joblib
-    dataconfig = joblib.load('dataconfigv1_5wss')
+    dataconfig = joblib.load('dataconfigv1_8wss')
     process1 = dataconfig[:250]
     process2 = dataconfig[250:500]
     process3 = dataconfig[500:750]
     process4 = dataconfig[750:1000]
 
     res = []
-    print('xixi')
+    failure_kind = 'fs'
     with ProcessPoolExecutor(4) as executor:
 
-        res.append(executor.submit(simulation,'fs',process1,True,'../datanew/5wss/fs/p1/'))
-        res.append(executor.submit(simulation,'fs',process2,True,'../datanew/5wss/fs/p2/'))
+        res.append(executor.submit(simulation,failure_kind,process1,True,'../datanew/8wss/fs/p1/',0))
+        res.append(executor.submit(simulation,failure_kind,process2,True,'../datanew/8wss/fs/p2/',250))
 
-        res.append(executor.submit(simulation,'fs',process3,True,'../datanew/5wss/fs/p3/'))
+        res.append(executor.submit(simulation,failure_kind,process3,True,'../datanew/8wss/fs/p3/',500))
 
-        res.append(executor.submit(simulation,'fs',process4,True,'../datanew/5wss/fs/p4/'))
+        res.append(executor.submit(simulation,failure_kind,process4,True,'../datanew/8wss/fs/p4/',750))
 
         wait(res)
 
