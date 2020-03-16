@@ -253,8 +253,8 @@ class LinearFiber(Fiber):
             __call__: the signal will
     '''
 
-    def __init__(self, alpha, D, length, slope=0, reference_wave_length=1550):
-        super(LinearFiber, self).__init__(alpha,D,length,reference_wave_length,slope,None)
+    def __init__(self, alpha, D, length, slope=0, reference_wavelength=1550):
+        super(LinearFiber, self).__init__(alpha,D,length,reference_wavelength,slope,None)
 
 
     def prop(self, signal:QamSignal):
@@ -271,7 +271,7 @@ class LinearFiber(Fiber):
             freq = fftfreq(signal[:].shape[1], 1 / signal.fs_in_fiber)
             omeg = 2 * np.pi * freq
 
-            after_prop[pol, :] = sample_fft * np.exp(-self.alpha_lin * self.length / 2)
+            after_prop[pol, :] = sample_fft * np.exp(-self.alphalin * self.length / 2)
             after_prop[pol, :] = ifft(after_prop[pol, :])
 
             disp = np.exp(-1j / 2 * self.beta2(center_lambda) * omeg ** 2 * self.length)
