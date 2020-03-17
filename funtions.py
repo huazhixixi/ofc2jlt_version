@@ -20,13 +20,13 @@ def prop(signal: QamSignal, ins) -> QamSignal:
 
 
 from typing import List
-from library import NonlinearFiber,WSS
+from library import WSS
 from library.optics import Edfa
-
+from library.channel import Fiber
 
 def visualize(ins: List):
     for index, ele in enumerate(ins):
-        if isinstance(ele, NonlinearFiber):
+        if isinstance(ele, Fiber):
             if index == len(ins) - 1:
                 print('Fiber', end='')
             else:

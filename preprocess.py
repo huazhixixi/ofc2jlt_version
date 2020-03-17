@@ -6,7 +6,7 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-print(sys.path)
+#print(sys.path)
 from scipy.integrate import trapz
 from scipy.signal import welch
 from scipy.signal import correlate
@@ -90,7 +90,7 @@ class Receiver(object):
         # matched filter
         signal = matched_filter(signal,0.2)
         import matplotlib.pyplot as plt
-        [freqs, pxx] = welch(signal[0, :], fs=signal.fs, detrend=False, nfft=2048,
+        [freqs, pxx] = welch(signal[0, :], fs=signal.fs, detrend=False, nfft=1024,
                              return_onesided=False)
         self.centroid = self.calc_centroid(freqs, pxx)
         self.spectrum = np.fft.fftshift(pxx)
@@ -101,7 +101,7 @@ class Receiver(object):
         # LMS
         signal.inplace_normalise()
         
-        self.equalizer = LMS(ntaps=35,loops=3,train_iter=3,lr_train=0.0001/4)
+        self.equalizer = LMS(ntaps=35,loops=3,train_iter=3,lr_train=0.001/4)
         
         signal = self.equalizer.equalize(signal)
         
@@ -184,21 +184,22 @@ def processing_files(dirname,names, kind, log_name,savedir):
 if __name__ == '__main__':
     from concurrent.futures import ProcessPoolExecutor,wait
 
-    basedir = './'
+    basedir = '../datatest_guding/5wss/ft/'
     name = os.listdir(basedir)
     name_0 = name[:250]
     name_1 = name[250:500]
     name_2 = name[500:750]
     name_3 = name[750:1000]
-
     res = []
+    log_name = 'log'
+    csv_save_dir = '../datatest_guding/5wss/'
     with ProcessPoolExecutor(4) as executor:
-        res.append(executor.submit(processing_files, basedir,name_0, 'fs', 'log_process0', '5wssfs_processe0'))
-        res.append(executor.submit(processing_files, basedir,name_1, 'fs', 'log_process1', '5wssfs_processe1'))
+        res.append(executor.submit(processing_files, basedir,name_0, 'ft', 'log_process580', csv_save_dir+'5wssft_processe80.csv'))
+        res.append(executor.submit(processing_files, basedir,name_1, 'ft', 'log_process581', csv_save_dir+'5wssft_processe81.csv'))
 
-        res.append(executor.submit(processing_files, basedir,name_2, 'fs', 'log_process2', '5wssfs_processe2'))
+        res.append(executor.submit(processing_files, basedir,name_2, 'ft', 'log_process582', csv_save_dir+'5wssft_processe82.csv'))
 
-        res.append(executor.submit(processing_files, basedir,name_3, 'fs', 'log_process3', '5wssfs_processe3'))
+        res.append(executor.submit(processing_files, basedir,name_3, 'ft', 'log_process583', csv_save_dir+'5wssft_processe83.csv'))
 
         wait(res)
 
